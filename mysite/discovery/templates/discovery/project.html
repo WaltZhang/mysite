@@ -1,0 +1,27 @@
+{% extends 'discovery/base.html' %}
+{% block project_active %}active{% endblock %}
+
+{% block body %}
+<h1>{{ project.name }}</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Creator</td>
+            <td>Date</td>
+        </tr>
+    </thead>
+{% for dataset in project.dataset_set.all %}
+    <tbody>
+        <tr>
+            <td>{{ dataset.name }}</td>
+            <td>{{ dataset.creator }}</td>
+            <td>{{ dataset.creation_date }}</td>
+        </tr>
+    </tbody>
+{% endfor %}
+</table>
+{% endblock %}
