@@ -4,6 +4,20 @@ from django.db.models.query_utils import Q
 from django.contrib.auth import authenticate, login, logout
 from .models import Project, Dataset
 from .forms import UserForm
+from .models import AQI
+from django.http import HttpResponse
+
+
+def load_aqi(request):
+    aqi = AQI()
+    df = aqi.load_aqi()
+    return HttpResponse(df.dtypes)
+
+
+def save_aqi(request):
+    aqi = AQI()
+    aqi.save_aqi()
+    return HttpResponse('Saved')
 
 
 class ProjectsView(generic.ListView):
@@ -17,6 +31,16 @@ class ProjectsView(generic.ListView):
 class ProjectView(generic.DetailView):
     template_name = 'discovery/project.html'
     model = Project
+
+
+def datasets(request):
+    if not request.user.is_authenticated():
+        return render(request, 'discovery/login.html')
+    else:
+        dataset_list = Dataset.objects.filter(user=request.user)
+        return render(request, 'discovery/datasets.html', {
+            'datasets': dataset_list,
+        })
 
 
 def projects(request):
@@ -80,4 +104,3 @@ def logout_user(request):
         "form": form,
     }
     return render(request, 'discovery/login.html', context)
-
