@@ -9,8 +9,6 @@ class Spark:
         spark_home = settings.SPARK_HOME if settings.SPARK_HOME else '/usr/local/spark'
         os.environ['SPARK_HOME'] = spark_home
         sys.path.insert(0, settings.PYTHONPATH if settings.PYTHONPATH else os.path.join(spark_home, 'python'))
-        sys.path.insert(0, settings.PY4J_DIR if settings.PY4J_DIR else os.path.join(spark_home,
-                                                                                    "python/lib/py4j-0.10.4-src"))
         sys.path.insert(0, settings.PYSPARK_DIR if settings.PYSPARK_DIR else os.path.join(spark_home, 'python/pyspark'))
         if settings.PYSPARK_PYTHON:
             os.environ['PYSPARK_PYTHON'] = settings.PYSPARK_PYTHON
@@ -24,7 +22,7 @@ class Spark:
         return SparkSession\
             .builder\
             .appName(app_name)\
-            .enableHiveSupport()\
+            .enableHiveSupport() \
             .master(master)\
             .getOrCreate()
         # .config("spark.sql.warehouse.dir", '/Users/walt/Development/python/mysite')\

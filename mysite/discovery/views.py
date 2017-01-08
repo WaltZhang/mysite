@@ -33,10 +33,17 @@ class ProjectView(generic.DetailView):
     model = Project
 
 
+class DatasetView(generic.DetailView):
+    model =Dataset
+
+
 def datasets(request):
     if not request.user.is_authenticated():
         return render(request, 'discovery/login.html')
     else:
+        # aqi = AQI()
+        # dss = aqi.load_aqi().collect()
+        # dataset_list = [ds.asDict() for ds in dss]
         dataset_list = Dataset.objects.filter(user=request.user)
         return render(request, 'discovery/datasets.html', {
             'datasets': dataset_list,
