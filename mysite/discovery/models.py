@@ -23,6 +23,15 @@ class Dataset(models.Model):
         return self.name
 
 
+class Collection(object):
+    def __init__(self, collection_name):
+        self._collection = collection_name
+
+    def to_spark(self):
+        sql = 'SELECT * FROM ' + self._collection
+        return self._sc.spark.sql(sql)
+
+
 class AQI(object):
     def __init__(self):
         self._sc = Spark()
@@ -41,14 +50,17 @@ class AQI(object):
                 ]))
             ))
         ])
-        datasets = [('AQI', 'walt', '2017-01-03', ['id', 'location', 'date', 'aqi']), ]
+        datasets = [('aqi', 'walt', '2017-01-03', 'location||date||aqi'), ]
         rdd = self._sc.spark.sparkContext.parallelize(datasets)
         df1 = self._sc.spark.createDataFrame(rdd, dataset_cols)
-        df2 = df1.withColumn('created_time', df1.created_time.cast('timestamp').alias('created_time'))
+        df1 = df1.withColumn('created_time', df1.created_time.cast('timestamp').alias('created_time'))
         # list = [{'name': 'Alice', 'id': 1}, {'name': 'Bob', 'id': 2}, {'name': 'Peter', 'id': 3}]
         # df = self._sc.spark.createDataFrame(list)
-        df2.write.saveAsTable('AQI')
-        dss = [ds.asDict() for ds in df2.collect()]
+        df1.write.saveAsTable('mdr')
+        aqi = [('Shanghai', '2017-01-02', 100),]
+        df2 = self._sc.spark.createDataFrame(aqi, ['location', 'date', 'aqi'])
+        df2.write.saveAsTable('aqi')
+        dss = [ds.asDict() for ds in df1.collect()]
         for ds in dss:
             # dataset = Dataset(name=ds['name'], creator=dss['creator'], creation_date=dss['created_time'])
             dataset = Dataset()

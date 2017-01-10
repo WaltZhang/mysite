@@ -1,8 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views import generic
 from django.db.models.query_utils import Q
 from django.contrib.auth import authenticate, login, logout
-from .models import Project, Dataset
+from .models import Project, Dataset, Collection
 from .forms import UserForm
 from .models import AQI
 from django.http import HttpResponse
@@ -47,6 +47,27 @@ def datasets(request):
         dataset_list = Dataset.objects.filter(user=request.user)
         return render(request, 'discovery/datasets.html', {
             'datasets': dataset_list,
+        })
+
+
+def dataset(request, pk):
+    if not request.user.is_authenticated():
+        return render(request, 'discovery/dataset.html')
+    else:
+        ds = get_object_or_404(Dataset, pk=pk)
+        collection = Collection(ds.name)
+        column_titles = [attribute.strip() for attribute in ds.attributes.splite('||')]
+        df = collection.to_spark()
+        rows = []
+        for row in df.collect():
+            data = {}
+            for k, v in row.asDict().items():
+                data[k] = v
+            rows.append(data)
+        return render(request, 'discovery/dataset.html', {
+            'dataset': dataset,
+            'column_titles': column_titles,
+            'column_body': data,
         })
 
 
