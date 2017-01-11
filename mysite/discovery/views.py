@@ -56,7 +56,7 @@ def dataset(request, pk):
     else:
         ds = get_object_or_404(Dataset, pk=pk)
         collection = Collection(ds.name)
-        column_titles = [attribute.strip() for attribute in ds.attributes.splite('||')]
+        column_titles = [attribute.strip() for attribute in ds.attributes.split('||')]
         df = collection.to_spark()
         rows = []
         for row in df.collect():
@@ -67,7 +67,7 @@ def dataset(request, pk):
         return render(request, 'discovery/dataset.html', {
             'dataset': dataset,
             'column_titles': column_titles,
-            'column_body': data,
+            'column_body': rows,
         })
 
 
