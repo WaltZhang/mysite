@@ -2,9 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Investment</title>
 </head>
 <body>
-
+{% if investment_list %}
+    <ul>
+    {% for investment in investment_list %}
+        <li><a href="/stocks/{{ investment.id }}">{{ investment.code }} &nbsp; {{ investment.updated_date }}</a></li>
+    {% endfor %}
+    </ul>
+{% endif %}
 </body>
 </html>
