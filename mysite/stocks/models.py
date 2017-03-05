@@ -1,7 +1,21 @@
 from django.db import models
+from django.contrib.auth.models import User
+
+
+class InvestmentModel(models.Model):
+    user = models.ForeignKey(User)
+    code = models.CharField(max_length=10)
+    updated_date = models.DateField()
+
+    def __str__(self):
+        return self.code
+
+    def __repr__(self):
+        return self.code
 
 
 class StockModel(models.Model):
+    investment = models.ForeignKey(InvestmentModel)
     code = models.CharField(max_length=10)
     date = models.DateField()
     open = models.FloatField()
@@ -12,7 +26,7 @@ class StockModel(models.Model):
     adj_close = models.FloatField()
 
     def __str__(self):
-        return self.code
+        return self.code + ' : ' + self.date.strftime('%b %d %Y')
 
-    def __unicode__(self):
-        return self.code
+    def __repr__(self):
+        return self.code + ' : ' + self.date.strftime('%b %d %Y')
