@@ -3,20 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <title>Stock</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet' type='text/css'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/locale/bootstrap-table-zh-CN.min.js"></script>
 </head>
 <body>
-{% if stock_list %}
-    <ul>
-    {% for stock in stock_list %}
-        <li>{{ stock.code }}</li>
-        <li>{{ stock.open }}</li>
-        <li>{{ stock.high }}</li>
-        <li>{{ stock.low }}</li>
-        <li>{{ stock.close }}</li>
-        <li>{{ stock.volume }}</li>
-        <li>{{ stock.adj_close }}</li>
+<h2>Investment {{ investment.code }}</h2>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.num_pages }}
+        </span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+
+<table class="table table-striped table-hover table-bordered">
+    <thead>
+        <tr>
+        <td>date</td>
+        <td>open</td>
+        <td>high</td>
+        <td>low</td>
+        <td>close</td>
+        <td>volume</td>
+        <td>adjusted close</td>
+        </tr>
+    </thead>
+    <tbody>
+    {% for stock in page_obj %}
+    <tr>
+        <td>{{ stock.date }}</td>
+        <td>{{ stock.open }}</td>
+        <td>{{ stock.high }}</td>
+        <td>{{ stock.low }}</td>
+        <td>{{ stock.close }}</td>
+        <td>{{ stock.volume }}</td>
+        <td>{{ stock.adj_close }}</td>
+    </tr>
     {% endfor %}
-    </ul>
-{% endif %}
+    </tbody>
+</table>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.num_pages }}
+        </span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+
 </body>
 </html>
