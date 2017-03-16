@@ -16,9 +16,6 @@ class InvestmentView(ListView):
 
     def post(self, request, *args, **kwargs):
         try:
-            count = StockModel.objects.filter(code=request.POST.get('stock_code')).count()
-            if count == 0:
-
             investment = InvestmentModel.objects.get(code=request.POST.get('stock_code'))
         except ObjectDoesNotExist:
             investment = create_investment(code=request.POST.get('stock_code'), user=self.request.user)
