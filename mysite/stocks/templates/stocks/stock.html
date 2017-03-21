@@ -13,7 +13,11 @@
 </head>
 <body>
 <h2>Investment {{ investment.code }}</h2>
-
+<form action="{% url 'stocks:investments' %}" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Delete" id="delete" name="delete">
+    <input type="submit" value="Back" id="back" name="back">
+</form>
 <div class="pagination">
     <span class="step-links">
         {% if page_obj.has_previous %}
