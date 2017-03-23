@@ -5,12 +5,26 @@
     <title>Investment</title>
 </head>
 <body>
-{% if investment_list %}
-    <ul>
-    {% for investment in investment_list %}
-        <li><a href="/stocks/{{ investment.id }}">{{ investment.code }} &nbsp; {{ investment.updated_date }}</a></li>
-    {% endfor %}
-    </ul>
+{% if error_message %}
+    <p><strong>{{ error_message }}</strong></p>
 {% endif %}
+{% if investment_list %}
+<ul>
+    {% for investment in investment_list %}
+    <li>
+        <form action="{% url 'stocks:delete' investment.id %}" method="post">
+            {% csrf_token %}
+            <a href="{% url 'stocks:stock' investment.id %}">{{ investment.code }} &nbsp; {{ investment.updated_date }}</a>
+            <input type="submit" value="Delete">
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+<form action="." method="post">
+    {% csrf_token %}
+    <input name="stock_code" id="stock_code">
+    <input type="submit" valu="OK">
+</form>
 </body>
 </html>
