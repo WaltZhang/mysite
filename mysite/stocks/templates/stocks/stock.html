@@ -13,11 +13,11 @@
 </head>
 <body>
 <h2>Investment {{ investment.code }}</h2>
-<form action="{% url 'stocks:investments' %}" method="post">
+<form action="{% url 'stocks:delete' investment.id %}" method="post">
     {% csrf_token %}
     <input type="submit" value="Delete" id="delete" name="delete">
-    <input type="submit" value="Back" id="back" name="back">
 </form>
+<p><a href="{% url 'stocks:investment' %}">Back</a></p>
 <div class="pagination">
     <span class="step-links">
         {% if page_obj.has_previous %}
@@ -34,7 +34,7 @@
 
 <table class="table table-striped table-hover table-bordered">
     <thead>
-        <tr>
+    <tr>
         <td>date</td>
         <td>open</td>
         <td>high</td>
@@ -42,7 +42,7 @@
         <td>close</td>
         <td>volume</td>
         <td>adjusted close</td>
-        </tr>
+    </tr>
     </thead>
     <tbody>
     {% for stock in page_obj %}
