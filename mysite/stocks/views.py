@@ -1,9 +1,11 @@
 from django.views.generic.detail import SingleObjectMixin
-from django.views.generic import ListView, TemplateView
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.views.generic import ListView
+from django.shortcuts import redirect
+from django.views.generic.edit import DeleteView
 from django.core.exceptions import ObjectDoesNotExist
-from .models import InvestmentModel, StockModel
+from django.core.urlresolvers import reverse_lazy
+from django.contrib import messages
+from .models import InvestmentModel
 from .provision import create_investment
 
 
@@ -18,9 +20,19 @@ class InvestmentView(ListView):
         try:
             investment = InvestmentModel.objects.get(code=request.POST.get('stock_code'))
         except ObjectDoesNotExist:
-            investment = create_investment(code=request.POST.get('stock_code'), user=self.request.user)
-        return HttpResponse(investment)
+            try:
+                investment = create_investment(code=request.POST.get('stock_code'), user=self.request.user)
+            except:
+                messages.add_message(request, messages.INFO, 'Can not find stock with code: {}'.format(request.POST.get('stock_code')))
+                return redirect('stocks:investment')
+        return redirect('stocks:stock', investment.id)
 
+    def get_context_data(self, **kwargs):
+        context = super(InvestmentView, self).get_context_data(**kwargs)
+        storage = messages.get_messages(self.request)
+        for message in storage:
+            context['error_message'] = message
+        return context
 
 class StockView(SingleObjectMixin, ListView):
     template_name = 'stocks/stock.html'
@@ -39,3 +51,7 @@ class StockView(SingleObjectMixin, ListView):
     def get_queryset(self):
         return self.object.stockmodel_set.all()
 
+
+class InvestmentDelete(DeleteView):
+    model = InvestmentModel
+    success_url = reverse_lazy('stocks:investment')
