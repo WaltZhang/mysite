@@ -1,30 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Investment</title>
-</head>
-<body>
-{% if error_message %}
-    <p><strong>{{ error_message }}</strong></p>
-{% endif %}
-{% if investment_list %}
-<ul>
-    {% for investment in investment_list %}
-    <li>
-        <form action="{% url 'stocks:delete' investment.id %}" method="post">
-            {% csrf_token %}
-            <a href="{% url 'stocks:stock' investment.id %}">{{ investment.code }} &nbsp; {{ investment.updated_date }}</a>
-            <input type="submit" value="Delete">
-        </form>
-    </li>
-    {% endfor %}
-</ul>
-{% endif %}
-<form action="." method="post">
-    {% csrf_token %}
-    <input name="stock_code" id="stock_code">
-    <input type="submit" valu="OK">
-</form>
-</body>
-</html>
+{% extends 'stocks/base.html' %}
+{% block body %}
+    <div class="col-sm-4 col-lg-2">
+    {% if messages %}
+        {% for message in messages %}
+        <p><strong>{{ message }}</strong></p>
+        {% endfor %}
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="input-group">
+            <input id="stock_code" name="stock_code" placeholder="stock code">
+            <div class="input-group-btn">
+                <button type="submit" value="Search" class="btn btn-default">
+                    <i class="glyphicon glyphicon-search"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+    {% if investment_list %}
+        <ul>
+        {% for investment in investment_list %}
+            <form action="{% url 'stocks:delete' investment.id %}" method="post">
+                {% csrf_token %}
+                <li>
+                    <a href="/stocks/{{ investment.id }}">{{ investment.code }} &nbsp; {{ investment.updated_date }}</a>
+                    <input type="submit" value="Delete" id="delete" name="delete">
+                </li>
+            </form>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    </div>
+{% endblock %}

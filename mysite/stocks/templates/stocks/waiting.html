@@ -1,0 +1,22 @@
+{% extends 'stocks/base.html' %}
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '/stocks/{{ code }}/wait',
+            complete: function (xhr, status) {
+                if (status == 'success') {
+                    location.reload();
+                }
+                window.location.replace('/stocks/');
+            }
+        })
+    },
+    setInterval(function() {
+        $("#dot1").after(".");
+    }, 1000)
+    )
+</script>
+
+{% block body %}
+    <span id="dot1">Waiting</span>
+{% endblock %}
