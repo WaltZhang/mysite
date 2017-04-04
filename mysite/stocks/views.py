@@ -1,10 +1,11 @@
-from django.views.generic.detail import SingleObjectMixin
-from django.views.generic import ListView
-from django.shortcuts import redirect
-from django.views.generic.edit import DeleteView
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse_lazy
+from django.views.generic.detail import SingleObjectMixin
+from django.views.generic import ListView, TemplateView, View
+from django.views.generic.edit import DeleteView
+from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth import authenticate, login, logout
 from .models import InvestmentModel
 from .provision import create_investment
 
@@ -20,19 +21,11 @@ class InvestmentView(ListView):
         try:
             investment = InvestmentModel.objects.get(code=request.POST.get('stock_code'))
         except ObjectDoesNotExist:
-            try:
-                investment = create_investment(code=request.POST.get('stock_code'), user=self.request.user)
-            except:
-                messages.add_message(request, messages.INFO, 'Can not find stock with code: {}'.format(request.POST.get('stock_code')))
-                return redirect('stocks:investment')
-        return redirect('stocks:stock', investment.id)
+            return render(request, 'stocks/waiting.html', {'code': request.POST.get('stock_code')})
+            # return redirect('stocks:waiting', code=request.POST.get('stock_code'))
+        else:
+            return redirect('stocks:stock', pk=investment.id)
 
-    def get_context_data(self, **kwargs):
-        context = super(InvestmentView, self).get_context_data(**kwargs)
-        storage = messages.get_messages(self.request)
-        for message in storage:
-            context['error_message'] = message
-        return context
 
 class StockView(SingleObjectMixin, ListView):
     template_name = 'stocks/stock.html'
@@ -54,4 +47,22 @@ class StockView(SingleObjectMixin, ListView):
 
 class InvestmentDelete(DeleteView):
     model = InvestmentModel
-    success_url = reverse_lazy('stocks:investment')
+    success_url = reverse_lazy('stocks:investments')
+
+
+class WaitingView(TemplateView):
+    template_name = 'stocks/waiting.html'
+
+    def get(self, request, *args, **kwargs):
+        try:
+            investment = create_investment(code=kwargs.get('code'), user=request.user)
+        except Exception as e:
+            messages.add_message(request, messages.INFO, 'Can not find stock with code: {}'.format(kwargs.get('code')))
+        #     return render(request, 'stocks/waiting.html', )
+            return super(WaitingView, self).get(request, *args, **kwargs)
+        return redirect('stocks:stock', pk=investment.id)
+
+
+class LogoutView(View):
+    def get(self, request, *args, **kwargs):
+        logout(request)
