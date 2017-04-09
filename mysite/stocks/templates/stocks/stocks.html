@@ -1,34 +1,46 @@
 {% extends 'stocks/base.html' %}
 {% block body %}
-    <div class="col-sm-4 col-lg-2">
+    <div class="col-sm-4 col-lg-2" style="padding-top: 70px;">
     {% if messages %}
         {% for message in messages %}
         <p><strong>{{ message }}</strong></p>
         {% endfor %}
     {% endif %}
-    <form method="post">
-        {% csrf_token %}
-        <div class="input-group">
-            <input id="stock_code" name="stock_code" placeholder="stock code">
-            <div class="input-group-btn">
-                <button type="submit" value="Search" class="btn btn-default">
-                    <i class="glyphicon glyphicon-search"></i>
-                </button>
+        <form method="get">
+            <div class="input-group">
+                <input id="stock_code" name="stock_code" placeholder="stock code">
+                <div class="input-group-btn">
+                    <button type="submit" value="Search" class="btn btn-default">
+                        <i class="glyphicon glyphicon-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+        <div class="container">
+            <div class="row">
+            {% if investment_list %}
+                {% for investment in investment_list %}
+                <div class="col-sm-3">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            {{ investment.code }}
+                        </div>
+                        <div class="panel-body">
+                            <a href="/stocks/{{ investment.id }}">Detail</a>
+                        </div>
+                        <div class="panel-footer">
+                            <form action="{% url 'stocks:delete' investment.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-default btn-sm">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
             </div>
         </div>
-    </form>
-    {% if investment_list %}
-        <ul>
-        {% for investment in investment_list %}
-            <form action="{% url 'stocks:delete' investment.id %}" method="post">
-                {% csrf_token %}
-                <li>
-                    <a href="/stocks/{{ investment.id }}">{{ investment.code }} &nbsp; {{ investment.updated_date }}</a>
-                    <input type="submit" value="Delete" id="delete" name="delete">
-                </li>
-            </form>
-        {% endfor %}
-        </ul>
-    {% endif %}
     </div>
 {% endblock %}

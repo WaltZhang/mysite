@@ -1,77 +1,195 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Stock</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <link href='https://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet' type='text/css'>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/locale/bootstrap-table-zh-CN.min.js"></script>
-</head>
-<body>
-<h2>Investment {{ investment.code }}</h2>
-<form action="{% url 'stocks:delete' investment.id %}" method="post">
-    {% csrf_token %}
-    <input type="submit" value="Delete" id="delete" name="delete">
-</form>
-<p><a class="btn-default" href="{% url 'stocks:investments' %}">Back</a></p>
-<div class="pagination">
-    <span class="step-links">
-        {% if page_obj.has_previous %}
-            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-        {% endif %}
-        <span class="current">
-            Page {{ page_obj.number }} of {{ page_obj.num_pages }}
-        </span>
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">next</a>
-        {% endif %}
-    </span>
-</div>
+{% extends 'stocks/base.html' %}
+{% block body %}
+    <div class="container-fluid" style="padding-top: 70px">
+        <div class="row">
+            <div class="col-sm-4 col-sm-3">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <h2>Investment {{ investment.code }}</h2>
+                        <form action="{% url 'stocks:delete' investment.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-default btn-sm">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </form>
+                        <a class="btn-default" href="{% url 'stocks:investments' %}">Back</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8 col-sm-9">
+                <div class="panel panel-default">
+                <div id="section1" class="container-fluid">
+                    <div class="pagination">
+                            <span class="step-links">
+                                {% if page_obj.has_previous %}
+                                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                                {% endif %}
+                                <span class="current">
+                                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                                </span>
+                                {% if page_obj.has_next %}
+                                    <a href="?page={{ page_obj.next_page_number }}">next</a>
+                                {% endif %}
+                            </span>
+                    </div>
 
-<table class="table table-striped table-hover table-bordered">
-    <thead>
-        <tr>
-        <td>date</td>
-        <td>open</td>
-        <td>high</td>
-        <td>low</td>
-        <td>close</td>
-        <td>volume</td>
-        <td>adjusted close</td>
-        </tr>
-    </thead>
-    <tbody>
-    {% for stock in page_obj %}
-    <tr>
-        <td>{{ stock.date }}</td>
-        <td>{{ stock.open }}</td>
-        <td>{{ stock.high }}</td>
-        <td>{{ stock.low }}</td>
-        <td>{{ stock.close }}</td>
-        <td>{{ stock.volume }}</td>
-        <td>{{ stock.adj_close }}</td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
+                    <div style="height: 450px; overflow-y: scroll;">
+                        <table class="table table-striped table-hover table-bordered">
+                            <thead>
+                                <tr>
+                                    <td>date</td>
+                                    <td>open</td>
+                                    <td>high</td>
+                                    <td>low</td>
+                                    <td>close</td>
+                                    <td>volume</td>
+                                    <td>adjusted close</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for stock in page_obj %}
+                                <tr>
+                                    <td>{{ stock.date }}</td>
+                                    <td>{{ stock.open }}</td>
+                                    <td>{{ stock.high }}</td>
+                                    <td>{{ stock.low }}</td>
+                                    <td>{{ stock.close }}</td>
+                                    <td>{{ stock.volume }}</td>
+                                    <td>{{ stock.adj_close }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
 
-<div class="pagination">
-    <span class="step-links">
-        {% if page_obj.has_previous %}
-            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-        {% endif %}
-        <span class="current">
-            Page {{ page_obj.number }} of {{ page_obj.num_pages }}
-        </span>
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">next</a>
-        {% endif %}
-    </span>
-</div>
+                    <div class="pagination">
+                            <span class="step-links">
+                                {% if page_obj.has_previous %}
+                                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                                {% endif %}
+                                <span class="current">
+                                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                                </span>
+                                {% if page_obj.has_next %}
+                                    <a href="?page={{ page_obj.next_page_number }}">next</a>
+                                {% endif %}
+                            </span>
+                        </div>
+                </div>
+                <br>
+                <div id="section2" class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <canvas id="chartContainer1" style="height: 500px; width: 100%;">
+                                Hello
+                            </canvas>
+                        </div>
+                        <div class="col-sm-4">
+                            <canvas id="chartContainer2" style="height: 500px; width: 100%;">
+                                World
+                            </canvas>
+                        </div>
+                        <div class="col-sm-4">
+                            <canvas id="chartContainer3" style="height: 500px; width: 100%;">
+                                Again
+                            </canvas>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        window.onload = function () {
+            var options = {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:true
+                        }
+                    }]
+                }
+            }
+            var ctx = document.getElementById("chartContainer1");
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [
+                        {% for stock in page_obj %}
+                            '{{ stock.date }}',
+                        {% endfor %}
+                    ],
+                    datasets: [{
+                        label: 'Volume',
+                        data: [
+                            {% for stock in page_obj %}
+                                {{ stock.volume }},
+                            {% endfor %}
+                        ],
+                        backgroundColor: [
+                            {% for stock in page_obj %}
+                                'rgba(126, 215, 126, 1)',
+                            {% endfor %}
+                        ]
+                    }]
+                },
+                options: options
+            });
 
-</body>
-</html>
+            var ctx = document.getElementById("chartContainer2");
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [
+                        {% for stock in page_obj %}
+                            '{{ stock.date }}',
+                        {% endfor %}
+                    ],
+                    datasets: [{
+                        label: 'Adjust Close',
+                        data: [
+                            {% for stock in page_obj %}
+                                {{ stock.adj_close }},
+                            {% endfor %}
+                        ],
+                        backgroundColor: [
+                            {% for stock in page_obj %}
+                            'rgba({% widthratio forloop.counter 1 5 %}, {% widthratio forloop.counter 1 5 %}, {% widthratio forloop.counter 1 5 %}, 1)',
+                            {% endfor %}
+                        ]
+                    }]
+                },
+                options: options
+            });
+
+            var ctx = document.getElementById("chartContainer3");
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [
+                        {% for stock in page_obj %}
+                            '{{ stock.date }}',
+                        {% endfor %}
+                    ],
+                    datasets: [{
+                        label: 'Close',
+                        data: [
+                            {% for stock in page_obj %}
+                                {{ stock.close }},
+                            {% endfor %}
+                        ],
+                        backgroundColor: 'rgba(0, 60, 126, 0.5)',
+                    }],
+                    fill: false,
+                    lineTension: 0.1,
+                    borderCapStyle: 'butt',
+                    borderDash: [],
+                    borderDashOffset: 0.0,
+                    borderJoinStyle: 'miter',
+                },
+                options: options
+            });
+        }
+    </script>
+{% endblock %}

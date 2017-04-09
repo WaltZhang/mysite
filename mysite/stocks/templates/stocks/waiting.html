@@ -1,22 +1,33 @@
-{% extends 'stocks/base.html' %}
-<script>
-    $(document).ready(function () {
-        $.ajax({
-            url: '/stocks/{{ code }}/wait',
-            complete: function (xhr, status) {
-                if (status == 'success') {
-                    location.reload();
-                }
-                window.location.replace('/stocks/');
-            }
-        })
-    },
-    setInterval(function() {
-        $("#dot1").after(".");
-    }, 1000)
-    )
-</script>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}discovery{% endblock %}</title>
+    {% load staticfiles %}
+    <link rel="shortcut icon" type="image/png" href="{%  static 'favicon.ico' %}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Satisfy' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="{% static 'stocks/style.css' %}"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="{% static 'stocks/js/main.js' %}"></script>
+    <script>
+        $(document).ready(function () {
+                $.ajax({
+                    url: "{% url 'stocks:waiting' code %}",
+                    complete: function (xhr, status) {
+                        if (status == 'success') {
+                            location.reload();
+                        }
+                        window.location.replace('/stocks/');
+                    },
+                })
+            },
+            setInterval(function() {
+                $("#dot1").after(".");
+            }, 1000)
+        )
+    </script>
+</head>
 
-{% block body %}
+<body>
     <span id="dot1">Waiting</span>
-{% endblock %}
+</body>
