@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 class InvestmentModel(models.Model):
     user = models.ForeignKey(User)
     code = models.CharField(max_length=10)
-    updated_date = models.DateField()
 
     def __str__(self):
         return self.code

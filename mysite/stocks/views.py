@@ -17,14 +17,16 @@ class InvestmentView(ListView):
     def get_queryset(self):
         return InvestmentModel.objects.filter(user__username=self.request.user.username)
 
-    def post(self, request, *args, **kwargs):
-        try:
-            investment = InvestmentModel.objects.get(code=request.POST.get('stock_code'))
-        except ObjectDoesNotExist:
-            return render(request, 'stocks/waiting.html', {'code': request.POST.get('stock_code')})
-            # return redirect('stocks:waiting', code=request.POST.get('stock_code'))
-        else:
-            return redirect('stocks:stock', pk=investment.id)
+    def get(self, request, *args, **kwargs):
+        if request.GET.get('stock_code'):
+            try:
+                investment = InvestmentModel.objects.get(code=request.GET.get('stock_code'))
+            except ObjectDoesNotExist:
+                return render(request, 'stocks/waiting.html', {'code': request.GET.get('stock_code')})
+                # return redirect('stocks:waiting', code=request.GET.get('stock_code'))
+            else:
+                return redirect('stocks:stock', pk=investment.id)
+        return super(InvestmentView, self).get(request, *args, **kwargs)
 
 
 class StockView(SingleObjectMixin, ListView):
