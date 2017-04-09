@@ -29,7 +29,7 @@ def load_stock_data(investment, code, start_date=date(1990, 12, 1)):
                             adj_close=row['adj_close']) for row in rows
         ])
     else:
-        StockModel.objects.all().update(investment=investment)
+        qs.update(investment=investment)
 
 
 def _get_stock_csv(investment, code):
