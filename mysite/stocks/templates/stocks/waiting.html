@@ -16,6 +16,7 @@
                     complete: function (xhr, status) {
                         if (status == 'success') {
                             location.reload();
+                            return;
                         }
                         window.location.replace('/stocks/');
                     },
@@ -29,5 +30,5 @@
 </head>
 
 <body>
-    <span id="dot1">Waiting</span>
+<span id="dot1">Waiting</span>
 </body>
