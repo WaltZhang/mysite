@@ -37,6 +37,18 @@
                     </a>
                 </li>
             </ul>
+
+            <form class="navbar-form navbar-left" method="get" action="{% url 'stocks:investments' %}">
+                <div class="input-group">
+                    <input id="stock_code" name="stock_code" class="form-control" placeholder="stock code">
+                    <div class="input-group-btn">
+                        <button type="submit" value="Search" class="btn btn-default">
+                            <i class="glyphicon glyphicon-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
             <ul class="nav navbar-nav navbar-right">
                 <li>
                     <a href="{% url 'stocks:logout_user' %}">

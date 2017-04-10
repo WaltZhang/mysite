@@ -6,16 +6,6 @@
         <p><strong>{{ message }}</strong></p>
         {% endfor %}
     {% endif %}
-        <form method="get">
-            <div class="input-group">
-                <input id="stock_code" name="stock_code" placeholder="stock code">
-                <div class="input-group-btn">
-                    <button type="submit" value="Search" class="btn btn-default">
-                        <i class="glyphicon glyphicon-search"></i>
-                    </button>
-                </div>
-            </div>
-        </form>
         <div class="container">
             <div class="row">
             {% if investment_list %}
